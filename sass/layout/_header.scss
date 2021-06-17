@@ -1,0 +1,26 @@
+header {
+    background-color: $lightBg;
+    nav{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        .cartbutton {
+            font-size: 2rem;
+            color: $primaryColor;
+            :hover {
+                color: $secondaryColor;
+                cursor: pointer;
+                transition: color 0.1s ease-in-out;
+            }
+        }
+        .sitetitle{
+            text-decoration: none;
+            color: $primaryColor;
+            .orihighlight{
+                padding-left: 0.5rem;
+                color: $lightBg;
+                background-color: $primaryColor;
+            }
+        }
+    }
+}

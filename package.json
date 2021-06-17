@@ -1,0 +1,21 @@
+{
+  "name": "williamthal",
+  "version": "1.0.0",
+  "description": "WilliamThal",
+  "main": "index.js",
+  "scripts": {
+    "sass": "sass --watch ./sass/main.scss:./css/style.css -w --style compressed",
+    "prefix": "postcss ./css/style.css --use autoprefixer -d ./css"
+  },
+  "repository": {
+    "type": "",
+    "url": ""
+  },
+  "author": "William THAL",
+  "license": "ISC",
+  "browserslist": "last 4 versions",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": ""
+}
