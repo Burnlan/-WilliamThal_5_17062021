@@ -1,5 +1,6 @@
 .productpreview {
-    
+    text-decoration: none;
+    color: black;
     &:hover {
         cursor: pointer;
         color: $primaryColor;
@@ -25,4 +26,8 @@
     margin-top: -10px;
     overflow: hidden;
     border-bottom: 5px solid rgba($primaryColor, 0);
+}
+
+.price {
+    font-style: italic;
 }

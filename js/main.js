@@ -25,15 +25,16 @@ const buildProductPrev = function(product){
    
     //The anchor and the two divs that will make the preview
     const container = document.getElementById("productlist");
-    const newPreview = document.createElement("div");
+    const newPreview = document.createElement("a");
     const newPreviewInfo = document.createElement("div");
 
     //we build every element of the preview piecemeal for ease of use 
     const productImg = "<img class='prevImg' alt='picture of "+product.name+"' src='"+product.imageUrl+"'>"
     const productName = "<h3>"+product.name+"</h3>";
-    const productPrice = "<p class='text-end'>"+product.price+"€</p>";
+    const productPrice = "<p class='text-end price'>"+product.price+"€</p>";
 
     //we set up the preview bloc
+    newPreview.href = "product.html?id="+product._id;
     newPreview.classList.add("col-12", "col-md-3", "p-1", "productpreview");
     newPreview.innerHTML = productImg;
 
