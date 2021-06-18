@@ -24,12 +24,12 @@ const displayProducts = async function(){
 const buildProductPrev = function(product){
    
     //The anchor and the two divs that will make the preview
-    const container = document.getElementById("productlist");
+    const anchor = document.getElementById("productlist");
     const newPreview = document.createElement("a");
     const newPreviewInfo = document.createElement("div");
 
-    //we build every element of the preview piecemeal for ease of use 
-    const productImg = "<img class='prevImg' alt='picture of "+product.name+"' src='"+product.imageUrl+"'>"
+    //the content of the new
+    const productImg = "<img class='prevImg' alt='picture of "+product.name+"' src='"+product.imageUrl+"'>";
     const productName = "<h3>"+product.name+"</h3>";
     const productPrice = "<p class='text-end price'>"+product.price+"€</p>";
 
@@ -43,7 +43,7 @@ const buildProductPrev = function(product){
     newPreviewInfo.innerHTML = productName+productPrice;
 
     //we assemble the blocs and add them to the dom
-    container.appendChild(newPreview);
+    anchor.appendChild(newPreview);
     newPreview.appendChild(newPreviewInfo);
 
 }
