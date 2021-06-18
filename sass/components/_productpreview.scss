@@ -1,0 +1,13 @@
+.productpreview {
+    
+    :hover {
+        cursor: pointer;
+    }
+}
+
+.prevImg {
+    object-fit: cover;
+    width: 100%;
+    height: 75%;
+    overflow: hidden;
+}

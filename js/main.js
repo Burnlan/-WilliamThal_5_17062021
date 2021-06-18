@@ -1,8 +1,8 @@
 //calls the API and return the JSON the API gives
 const getProducts = async function(){
     
-    let response = await fetch("http://localhost:3000/api/cameras")
-    let data = await response.json()
+    let response = await fetch("http://localhost:3000/api/cameras");
+    let data = await response.json();
 
     return data;
 }
@@ -25,9 +25,13 @@ const buildProductPrev = function(product){
    
     const container = document.getElementById("productlist");
     const newPreview = document.createElement("div");
+    //we build every element of the preview piecemeal for ease of use 
+    const productImg = "<img class='prevImg' alt='picture of "+product.name+"' src='"+product.imageUrl+"'>"
+    const productName = "<h3>"+product.name+"</h3>";
+    const productPrice = "<p>"+product.price+"€</p>";
 
-    newPreview.classList.add("col-12", "col-md-4", "p-3", "productpreview");
-    newPreview.innerHTML = "<h3>"+product.name+"</h3>";
+    newPreview.classList.add("col-12", "col-md-3", "p-3", "productpreview");
+    newPreview.innerHTML = productImg+productName+productPrice;
 
     container.appendChild(newPreview);
 
