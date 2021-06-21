@@ -1,10 +1,17 @@
 //calls the API and return the JSON the API gives
 const getProducts = async function(){
-    
-    let response = await fetch("http://localhost:3000/api/cameras");
-    let data = await response.json();
+    try{
+        let response = await fetch("http://localhost:3000/api/cameras");
+        if(response.ok){
+            
+            let data = await response.json();
 
-    return data;
+            return data;
+        } 
+    }
+    catch(err){
+        console.log(err);
+    }    
 }
 
 //goes through the array of products to display them one after the other
@@ -39,7 +46,7 @@ const buildProductPrev = function(product){
     newPreview.innerHTML = productImg;
 
     //we set up the info bloc
-    newPreviewInfo.classList.add("container-fluid", "prevInfo", "p-1");
+    newPreviewInfo.classList.add("container-fluid", "prevInfo", "p-2");
     newPreviewInfo.innerHTML = productName+productPrice;
 
     //we assemble the blocs and add them to the dom
@@ -50,4 +57,5 @@ const buildProductPrev = function(product){
 
 //call the function that displays the products
 displayProducts();
+
 

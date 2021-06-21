@@ -7,7 +7,24 @@
 
 .orderBloc{
     text-align: end;
-    button{
-        margin: 0px 10px 0px 10px;
+    .itemprice{
+        font-size: 1.6rem;
+        color: $primaryColor;
+        font-style: italic;
     }
+    button{
+        padding: 0.5rem;
+        border-style: none;;
+        border-radius: 0.4rem;
+        margin: 25px 10px 0px 10px;
+        background-color: $secondaryColor;
+        color: $darkBg;
+        &:hover {
+            color: $primaryColor;
+        }
+    }
+}
+
+select{
+    margin: 0px 10px 0px 10px;
 }

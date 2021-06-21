@@ -4,11 +4,21 @@ console.log(productId);
 
 //get the item using the parameter in URL
 const getItem = async function(){
-    let response = await fetch("http://localhost:3000/api/cameras/"+productId);
-    let data = await response.json();
+    try{
+        let response = await fetch("http://localhost:3000/api/cameras/"+productId);
+        if(response.ok){
+            let data = await response.json();
 
-    return data;
+        return data;
+        }
+        
+    }
+    catch(err){
+        console.log(err);
+    }
 }
+
+
 
 //fill the page with item info
 const displayItem = async function(){
@@ -21,12 +31,15 @@ const displayItem = async function(){
     const imgBloc = document.createElement("div");
     const infoBloc = document.createElement("div");
     const orderBloc = document.createElement("div");
+
     //the content of the new blocs
     const itemImg = "<img alt='picture of "+item.name+"' src='"+item.imageUrl+"'>";
+    
     const itemName = "<h1>"+item.name+"</h1>";
     const itemDesc = "<p>"+item.description+"</p>";
+    
     const itemPrice = "<span class='itemprice'>"+item.price+"€</span>";
-    const orderButton = "<button type='button'> <i class='fas fa-cart-plus'></i> Ajouter au panier </button>"
+    const orderButton = "<button type='button' onclick='addToCart()'> <i class='fas fa-cart-plus'></i> Ajouter au panier </button>"
 
     //we set up the imgBloc
     imgBloc.classList.add("col-12", "col-md-7", "p-1", "imgBloc");
@@ -34,7 +47,7 @@ const displayItem = async function(){
 
     //we set up the infoBloc
     infoBloc.classList.add("col-12", "col-md-5", "p-1", "infoBloc");
-    infoBloc.innerHTML = itemName+itemDesc;
+    infoBloc.innerHTML = itemName+itemDesc+makeForm(item.lenses);
 
     //we set up the orderBloc
     orderBloc.classList.add("orderBloc");
@@ -44,7 +57,54 @@ const displayItem = async function(){
     anchor.appendChild(imgBloc);
     anchor.appendChild(infoBloc);
     infoBloc.appendChild(orderBloc);
+
+
 }
 
-//we do it
+//this function makes the form, separated from the rest for ease of use
+const makeForm = function(optionList){
+
+    //we make the different parts
+    const formLabel = "<label for='customform'>Choix de l'objectif</label>";
+    const formStart = "<select id='customform' name='objectifs'>";
+    let list = "";
+    const formEnd = "</select>";
+    //this populates the options
+    for(i=0; i < optionList.length; i++){
+        list += "<option value='"+optionList[i]+"'>"+optionList[i]+"</option>";
+    }
+    //we return the form in a string
+    return formLabel+formStart+list+formEnd;
+}
+
+//we display the item
 displayItem();
+
+
+//CODE FOR THE ADD TO CART BUTTON
+const addToCart = async function(){
+
+    let test = {
+        "firstName":"test", 
+        "lastName":"test", 
+        "address":"ruetest", 
+        "city":"villetest", 
+        "email":"mailtest",
+    };
+
+    let test2 = {
+        "products": [productId]
+    };
+    /*
+    let response = await fetch("http://localhost:3000/api/cameras/order",{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(test, test2)
+    })
+    */
+
+    console.log(JSON.stringify(test));
+
+}
