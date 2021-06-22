@@ -33,6 +33,24 @@ const displayItemCount = function(){
 displayItemCount();
 
 
+//get an item using it's ID
+const getItem = async function(id){
+    try{
+        let response = await fetch("http://localhost:3000/api/cameras/"+id);
+        if(response.ok){
+            let data = await response.json();
+
+        return data;
+        }
+        
+    }
+    catch(err){
+        console.log(err);
+    }
+}
+
+
+
 
 // ---------- SEARCH PAGE (INDEX) --------- //
 
@@ -98,31 +116,12 @@ const buildProductPrev = function(product){
 
 // ------ PRODUCT PAGE CODE ------------//
 
-//get the parameter in URL
-const productId = new URLSearchParams(window.location.search).get("id");
-console.log(productId);
-
-//get the item using the parameter in URL
-const getItem = async function(){
-    try{
-        let response = await fetch("http://localhost:3000/api/cameras/"+productId);
-        if(response.ok){
-            let data = await response.json();
-
-        return data;
-        }
-        
-    }
-    catch(err){
-        console.log(err);
-    }
-}
-
-
 //fill the page with item info
 const displayItem = async function(){
+    //get the parameter in URL
+    const productId = new URLSearchParams(window.location.search).get("id");
     //wait for the API to give item infos
-    let item = await getItem();
+    let item = await getItem(productId);
     //give corresponding title to page
     document.title = item.name;
     //the anchor and the two blocs 
@@ -176,10 +175,9 @@ const makeForm = function(optionList){
     return formLabel+formStart+list+formEnd;
 }
 
-
-//CODE FOR THE ADD TO CART BUTTON
+//add stuff to cart
 const addToCart = function(){
-
+    const productId = new URLSearchParams(window.location.search).get("id");
     let cart = localStorage.getItem("cart");
     cart = JSON.parse(cart);
     cart.push(productId);
@@ -187,23 +185,56 @@ const addToCart = function(){
     localStorage.setItem("cart", JSON.stringify(cart));
 
     displayItemCount();
+}
 
+//builds the list of items in cart
+const buildItemList = function(item){
+    //we create the element
+    const itemInList = document.createElement("div");
+    //we set up the components of the element
+    const itemName = "<div class='itemname col-3 text-end'>"+item.name+"</div>";
+    const itemPrice = "<div class='itemprice col-3 text-center'>"+item.price+"€</div>"; 
+    const itemRemove = "<button class='removeItem col-2'>Retirer cet article</button>";
+    //we build the element
+    itemInList.classList.add("col12", "row", "iteminlist");
+    itemInList.innerHTML = itemName+itemPrice+itemRemove; 
+    //we return the built element
+    return itemInList;
+}
+
+// ------------- CART PAGE ------------- //
+const displayItemsInCart = async function(){
+    let itemCount = numberItems();
+    let anchor = document.getElementById("cartitemlist");
+
+    if(itemCount>0){
+        let cart = localStorage.getItem("cart");
+        cart = JSON.parse(cart);
+        for(i=0; i<cart.length; i++){
+            //get the item
+            let item = await getItem(cart[i]);
+           anchor.appendChild(buildItemList(item));
+        }
+    }else{
+        anchor.innerHTML = "<p>Vous n'avez pas d'article dans votre panier.</p>";
+    }
 }
 
 
 
-// ------------ DISPLAY PAGE DEPENDANT STUFF -------------- //
+// ------------ DISPLAY PAGE SPECIFIC STUFF -------------- //
 //We check where we are and what we should display
 const pageType = document.querySelector("body");
 
 switch(true) {
     case pageType.classList.contains("searchpage") :
-        //call the function that displays the products
         displayProducts();
     break;
     case pageType.classList.contains("productpage") :
-        //we display the item
         displayItem();
+    break; 
+    case pageType.classList.contains("cartpage") :
+        displayItemsInCart();
     break;
-    default : console.log(pageType.classList);
+    default : console.log("No special display functions were called");
 }
