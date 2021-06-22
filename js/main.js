@@ -20,12 +20,14 @@ const numberItems = function() {
 const displayItemCount = function(){
     if(document.getElementsByClassName("cartbutton") != null) {
         let itemCount = numberItems();
+        let counter = document.getElementById("itemcount");
         if(itemCount > 0){
-            let counter = document.getElementById("itemcount");
-            
             counter.innerHTML = itemCount;
             counter.style.opacity = 1;
             
+        }else{
+            counter.innerHTML = 0;
+            counter.style.opacity = 0;
         }
     }
 }
@@ -181,31 +183,56 @@ const addToCart = function(){
     let cart = localStorage.getItem("cart");
     cart = JSON.parse(cart);
     cart.push(productId);
-    console.log(cart);
+
     localStorage.setItem("cart", JSON.stringify(cart));
 
     displayItemCount();
 }
 
+//removes the item at the given position from the cart
+const removeFromCart = function(pos){
+    let cart = localStorage.getItem("cart");
+    cart = JSON.parse(cart);
+    cart.splice(pos, 1);
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    displayItemCount();
+    displayItemsInCart();
+}
+
 //builds the list of items in cart
-const buildItemList = function(item){
+const buildItemList = function(item, pos){
     //we create the element
     const itemInList = document.createElement("div");
+    const itemRemove = document.createElement("button");
+
     //we set up the components of the element
     const itemName = "<div class='itemname col-3 text-end'>"+item.name+"</div>";
     const itemPrice = "<div class='itemprice col-3 text-center'>"+item.price+"€</div>"; 
-    const itemRemove = "<button class='removeItem col-2'>Retirer cet article</button>";
-    //we build the element
+
+    itemRemove.innerHTML = "Retirer cet article";
+    itemRemove.classList.add("col-2");
+    //we build the element with an event listener for the remove button
     itemInList.classList.add("col12", "row", "iteminlist");
-    itemInList.innerHTML = itemName+itemPrice+itemRemove; 
+    itemInList.innerHTML = itemName+itemPrice; 
+    
+    itemInList.appendChild(itemRemove);
+    itemInList.addEventListener("click", function(){
+        removeFromCart(pos);
+    });
+
     //we return the built element
     return itemInList;
 }
 
 // ------------- CART PAGE ------------- //
+//function that displays what's in the cart
 const displayItemsInCart = async function(){
     let itemCount = numberItems();
     let anchor = document.getElementById("cartitemlist");
+    //we wipe the cart clean, in case we're already on the page and updating the cart
+    anchor.innerHTML = "";
 
     if(itemCount>0){
         let cart = localStorage.getItem("cart");
@@ -213,7 +240,8 @@ const displayItemsInCart = async function(){
         for(i=0; i<cart.length; i++){
             //get the item
             let item = await getItem(cart[i]);
-           anchor.appendChild(buildItemList(item));
+
+           anchor.appendChild(buildItemList(item, i));
         }
     }else{
         anchor.innerHTML = "<p>Vous n'avez pas d'article dans votre panier.</p>";
