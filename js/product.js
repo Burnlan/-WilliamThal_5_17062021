@@ -19,7 +19,6 @@ const getItem = async function(){
 }
 
 
-
 //fill the page with item info
 const displayItem = async function(){
     //wait for the API to give item infos

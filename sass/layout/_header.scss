@@ -9,10 +9,27 @@ header {
         .cartbutton {
             font-size: 2rem;
             color: $primaryColor;
+            text-decoration: none;
             &:hover {
                 color: $secondaryColor;
                 cursor: pointer;
                 transition: color 0.1s ease-in-out;
+            }
+            #itemcount {
+                position: relative;
+                display: flex;
+                color: white;
+                font-size: 1rem;
+                top: -3rem;
+                left: -0.5rem;
+                background-color: $tertiaryColor;
+                padding: 3px;
+                border-radius: 50px;
+                width: 1.5rem;
+                height: 1.5rem;
+                justify-content: center;
+                align-items: center;
+                opacity: 0;
             }
         }
         .sitetitle{
