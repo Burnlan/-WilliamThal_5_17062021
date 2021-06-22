@@ -83,28 +83,36 @@ displayItem();
 
 //CODE FOR THE ADD TO CART BUTTON
 const addToCart = async function(){
-
-    let test = {
-        "firstName":"test", 
-        "lastName":"test", 
-        "address":"ruetest", 
-        "city":"villetest", 
-        "email":"mailtest",
+//Test the /order api
+    let order = {
+        contact: {
+            firstName:" ", 
+            lastName:" ", 
+            address:" ", 
+            city:" ", 
+            email:" "
+        },
+        products: [productId]
     };
 
-    let test2 = {
-        "products": [productId]
-    };
-    /*
+    console.log(order);
+    
     let response = await fetch("http://localhost:3000/api/cameras/order",{
         method: "POST",
         headers: {
+            "Accept": 'application/json', 
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(test, test2)
+        body: JSON.stringify(order)
     })
-    */
+    if(response.ok){
+        let data = await response.json();
+        console.log(data.products);
+    }else{
+        console.log(response);
+    }
+    
 
-    console.log(JSON.stringify(test));
+    
 
 }
