@@ -197,8 +197,7 @@ const makeForm = function(optionList){
 //add stuff to cart
 const addToCart = function(){
     const productId = new URLSearchParams(window.location.search).get("id");
-    let cart = localStorage.getItem("cart");
-    cart = JSON.parse(cart);
+    let cart = getCart();
     cart.push(productId);
 
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -208,8 +207,7 @@ const addToCart = function(){
 
 //removes the item at the given position from the cart
 const removeFromCart = function(pos){
-    let cart = localStorage.getItem("cart");
-    cart = JSON.parse(cart);
+    let cart = getCart();
     cart.splice(pos, 1);
 
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -217,6 +215,14 @@ const removeFromCart = function(pos){
     displayItemCount();
     displayItemsInCart();
 }
+
+//this function returns an array of the produt ids in the cart
+const getCart = function(){
+    let cart = localStorage.getItem("cart");
+    cart = JSON.parse(cart);
+    return cart;
+}
+
 
 //builds the list of items in cart
 const buildItemList = function(item, pos){
@@ -253,8 +259,7 @@ const displayItemsInCart = async function(){
 
     if(itemCount>0){
         //we get the items in the cart
-        let cart = localStorage.getItem("cart");
-        cart = JSON.parse(cart);
+        let cart = getCart();
 
         //we use the display loop to calculate the price total
         let totalPrice = 0;
@@ -298,12 +303,17 @@ const placeOrder = function(event){
     }else{
         //if the form is valid, we prevent the submit event
         event.preventDefault();
-        //we then call the function that creates a contact object using the form
-        contact = getFormInfo(target);
-        console.log(contact);
+        //we call the function that creates a contact object using the form
+        let contact = getFormInfo(target);
+        //then we create the order object (contact object + the cart array)
+        let order = new Order(contact, getCart());
+        console.log(order);
+        //we send the order
+        
     }
 }
 
+//this function takes info from the form and creates a contact object
 const getFormInfo = function(target){
     let formData = new FormData(target);
     let contact = new Contact(
