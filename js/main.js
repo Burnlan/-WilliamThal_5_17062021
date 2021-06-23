@@ -1,5 +1,23 @@
 
 // -------------------- UNIVERSAL CODE --------------------  //
+//define what a contact object is
+class Contact{
+    constructor(firstName, lastName, address, city, email){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.city = city;
+        this.email = email;
+    }
+}
+
+//define what an order object is
+class Order{
+    constructor(contact, products){
+        this.contact = contact;
+        this.products = products;
+    }
+}
 
 //create the cart array if it doesn't exist
 let checkCart = localStorage.getItem("cart");
@@ -256,9 +274,8 @@ const displayItemsInCart = async function(){
         totalDiv.classList.add("col-12", "p-3", "text-end");
         totalDiv.innerHTML = "<p>Total du panier : "+totalPrice+"€</p>"
         anchor.appendChild(totalDiv);
-
         //we add the eventListener to the submit button
-        document.getElementById("submitorder").addEventListener("click", getFormInfo);
+        document.getElementById("submitorder").addEventListener("click", placeOrder);
 
     } else {
         //we display a message
@@ -269,11 +286,11 @@ const displayItemsInCart = async function(){
 }
 
 
-//function that gets the form once it's filled
-const getFormInfo = function(event){
-    //we get the form data
+//function that places the order
+const placeOrder = function(event){
+    //we select the form
     const target = document.getElementById("orderform");
-    let formData = new FormData(target);
+    
     //we check if it's valid
     if(target.checkValidity() == false){
         //if invalid we let the event play out to get the most out of html5 form handling
@@ -281,9 +298,23 @@ const getFormInfo = function(event){
     }else{
         //if the form is valid, we prevent the submit event
         event.preventDefault();
-        //we then build the order object
+        //we then call the function that creates a contact object using the form
+        contact = getFormInfo(target);
+        console.log(contact);
     }
-    
+}
+
+const getFormInfo = function(target){
+    let formData = new FormData(target);
+    let contact = new Contact(
+        formData.get("firstname"),
+        formData.get("lastname"),
+        formData.get("address"),
+        formData.get("city"),
+        formData.get("email")  
+    );
+    //we return the contact object
+    return contact;
 }
 
 
