@@ -68,6 +68,20 @@ const getItem = async function(id){
     }
 }
 
+//this function returns an array of the produt ids in the cart
+const getCart = function(){
+    let cart = localStorage.getItem("cart");
+    cart = JSON.parse(cart);
+    return cart;
+}
+
+//this function empties the cart
+const deleteCart = function(){
+    let cart = getCart();
+    cart = [];
+    localStorage.setItem("cart", JSON.stringify(cart));
+    displayItemCount();
+}
 
 
 
@@ -133,7 +147,7 @@ const buildProductPrev = function(product){
 
 
 
-// ------ PRODUCT PAGE CODE ------------//
+// ---------------- PRODUCT PAGE -------------------//
 
 //fill the page with item info
 const displayItem = async function(){
@@ -215,14 +229,6 @@ const removeFromCart = function(pos){
     displayItemCount();
     displayItemsInCart();
 }
-
-//this function returns an array of the produt ids in the cart
-const getCart = function(){
-    let cart = localStorage.getItem("cart");
-    cart = JSON.parse(cart);
-    return cart;
-}
-
 
 //builds the list of items in cart
 const buildItemList = function(item, pos){
@@ -307,9 +313,8 @@ const placeOrder = function(event){
         let contact = getFormInfo(target);
         //then we create the order object (contact object + the cart array)
         let order = new Order(contact, getCart());
-        console.log(order);
-        //we send the order
-        
+        //we call the function that sends orders
+        sendOrder(order);
     }
 }
 
@@ -327,6 +332,35 @@ const getFormInfo = function(target){
     return contact;
 }
 
+//this function takes an order object and sends it
+const sendOrder = async function(order){
+    //calls the order API
+    let response = await fetch("http://localhost:3000/api/cameras/order",{
+        method: "POST",
+        headers: {
+            "Accept": 'application/json', 
+            "Content-Type": "application/json"
+        },
+            //sends the order object in JSON format
+            body: JSON.stringify(order)
+        })
+    if(response.ok){
+        let data = await response.json();
+        //we empty the cart
+        deleteCart();
+        //we redirect to the confirmation page, and pass the order id in the url
+        window.location.replace("confirmation.html?orderId="+data.orderId);
+    }else{
+        console.log(response);
+    }
+}
+
+// ---------------- ORDER CONFIRMED --------------- //
+
+const displayOrdeRecap = function(){
+
+}
+
 
 // ------------ DISPLAY PAGE SPECIFIC STUFF -------------- //
 //We check where we are and what we should display
@@ -342,5 +376,7 @@ switch(true) {
     case pageType.classList.contains("cartpage") :
         displayItemsInCart();
     break;
+    case pageType.classList.contains("confirmation") :
+        displayOrdeRecap();
     default : console.log("No special display functions were called");
 }
