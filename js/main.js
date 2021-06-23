@@ -23,7 +23,6 @@ class Order{
 let checkCart = localStorage.getItem("cart");
 if(checkCart === null){
     var cart = [];
-    window.localStorage;
     localStorage.setItem("cart", JSON.stringify(cart));
 }
 
@@ -108,8 +107,6 @@ const getProducts = async function(){
 const displayProducts = async function(){
     
     let products = await getProducts();
-
-    console.log(products);
 
     let productCount = products.length;
     for(i=0; i<productCount; i++){
@@ -305,7 +302,7 @@ const placeOrder = function(event){
     //we check if it's valid
     if(target.checkValidity() == false){
         //if invalid we let the event play out to get the most out of html5 form handling
-        console.log("mauvaises données");
+        console.log("error : invalid inputs");
     }else{
         //if the form is valid, we prevent the submit event
         event.preventDefault();
@@ -346,19 +343,38 @@ const sendOrder = async function(order){
         })
     if(response.ok){
         let data = await response.json();
+        //we store the order
+        localStorage.setItem("lastOrder", JSON.stringify(data));
         //we empty the cart
         deleteCart();
         //we redirect to the confirmation page, and pass the order id in the url
-        window.location.replace("confirmation.html?orderId="+data.orderId);
+        window.location.replace("confirmation.html");
     }else{
         console.log(response);
     }
 }
 
 // ---------------- ORDER CONFIRMED --------------- //
-
+//we display relevent informations
 const displayOrdeRecap = function(){
+    //we get the order data
+    let order = JSON.parse(localStorage.getItem("lastOrder"));
+    //we set up the anchor
+    const anchor = document.getElementById("orderrecap");
+    
+    //we create the components
+    const orderidBloc = document.createElement("div");
+    const priceBloc = document.createElement("div");
+    const recapBloc = document.createElement("div");
 
+    //we set up the bloc that display the order ID
+    orderidBloc.classList.add("col-12", "text-center");
+    orderidBloc.innerHTML = "<p>Voici l'identifiant de votre commande : "+order.orderId+"</p>";
+
+    //we set up the recap
+    recapBloc 
+
+    anchor.appendChild(orderidBloc);
 }
 
 
@@ -378,5 +394,6 @@ switch(true) {
     break;
     case pageType.classList.contains("confirmation") :
         displayOrdeRecap();
+    break;
     default : console.log("No special display functions were called");
 }
