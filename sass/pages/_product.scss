@@ -7,21 +7,15 @@
 
 .orderBloc{
     text-align: end;
+    margin-top: 20px;
     .itemprice{
         font-size: 1.6rem;
         color: $primaryColor;
         font-style: italic;
+        padding-right: 25px;
     }
     button{
-        padding: 0.5rem;
-        border-style: none;;
-        border-radius: 0.4rem;
-        margin: 25px 10px 0px 10px;
-        background-color: $secondaryColor;
-        color: $darkBg;
-        &:hover {
-            color: $primaryColor;
-        }
+        @include buttons;
     }
 }
 

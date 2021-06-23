@@ -1,0 +1,16 @@
+@mixin buttons {
+    padding: 0.5rem;
+    border-style: none;;
+    border-radius: 0.4rem;
+    background-color: $secondaryColor;
+    color: $darkBg;
+    box-shadow: 0px 5px 10px -7px $darkBg;
+    &:hover {
+        color: $primaryColor;
+        box-shadow: 0px 5px 13px -7px $darkBg;
+    }
+    &:active {
+        color: $primaryColor;
+        box-shadow: inset 0px 5px 13px -7px $darkBg;
+    }
+}
