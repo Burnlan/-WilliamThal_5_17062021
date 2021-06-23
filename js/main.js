@@ -217,7 +217,7 @@ const buildItemList = function(item, pos){
     itemInList.innerHTML = itemName+itemPrice; 
     
     itemInList.appendChild(itemRemove);
-    itemInList.addEventListener("click", function(){
+    itemRemove.addEventListener("click", function(){
         removeFromCart(pos);
     });
 
@@ -257,6 +257,9 @@ const displayItemsInCart = async function(){
         totalDiv.innerHTML = "<p>Total du panier : "+totalPrice+"€</p>"
         anchor.appendChild(totalDiv);
 
+        //we add the eventListener to the submit button
+        document.getElementById("submitorder").addEventListener("click", getFormInfo);
+
     } else {
         //we display a message
         anchor.innerHTML = "<p>Vous n'avez pas d'article dans votre panier.</p>";
@@ -265,6 +268,23 @@ const displayItemsInCart = async function(){
     }
 }
 
+
+//function that gets the form once it's filled
+const getFormInfo = function(event){
+    //we get the form data
+    const target = document.getElementById("orderform");
+    let formData = new FormData(target);
+    //we check if it's valid
+    if(target.checkValidity() == false){
+        //if invalid we let the event play out to get the most out of html5 form handling
+        console.log("mauvaises données");
+    }else{
+        //if the form is valid, we prevent the submit event
+        event.preventDefault();
+        //we then build the order object
+    }
+    
+}
 
 
 // ------------ DISPLAY PAGE SPECIFIC STUFF -------------- //
