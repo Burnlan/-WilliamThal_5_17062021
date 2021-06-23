@@ -12,7 +12,6 @@ if(checkCart === null){
 //count number of items in cart
 const numberItems = function() {
     let cart = JSON.parse(localStorage.getItem("cart"));
-    console.log(cart.length);
     return cart.length;
 }
 
@@ -239,16 +238,24 @@ const displayItemsInCart = async function(){
         let cart = localStorage.getItem("cart");
         cart = JSON.parse(cart);
 
+        //we use the display loop to calculate the price total
+        let totalPrice = 0;
 
         for(i=0; i<cart.length; i++){
             //get the item
             let item = await getItem(cart[i]);
             //display the item
             anchor.appendChild(buildItemList(item, i));
+            //add to price total
+            totalPrice += item.price;
         }
         //we allow access to the order form
         document.getElementById("contactform").disabled = false;
-
+        //we display the price total
+        let totalDiv = document.createElement("div");
+        totalDiv.classList.add("col-12", "p-3", "text-end");
+        totalDiv.innerHTML = "<p>Total du panier : "+totalPrice+"€</p>"
+        anchor.appendChild(totalDiv);
 
     } else {
         //we display a message
