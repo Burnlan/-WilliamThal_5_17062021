@@ -208,13 +208,13 @@ const buildItemList = function(item, pos){
     const itemRemove = document.createElement("button");
 
     //we set up the components of the element
-    const itemName = "<div class='itemname col-3 text-end'>"+item.name+"</div>";
-    const itemPrice = "<div class='itemprice col-3 text-center'>"+item.price+"€</div>"; 
+    const itemName = "<div class='itemname col-md-3 col-4 text-end'>"+item.name+"</div>";
+    const itemPrice = "<div class='itemprice col-md-3 col-4 text-center'>"+item.price+"€</div>"; 
 
     itemRemove.innerHTML = "Retirer cet article";
-    itemRemove.classList.add("col-2");
+    itemRemove.classList.add("col-md-4", "col-12");
     //we build the element with an event listener for the remove button
-    itemInList.classList.add("col12", "row", "iteminlist");
+    itemInList.classList.add("col12", "row", "p-1", "iteminlist");
     itemInList.innerHTML = itemName+itemPrice; 
     
     itemInList.appendChild(itemRemove);
@@ -235,16 +235,26 @@ const displayItemsInCart = async function(){
     anchor.innerHTML = "";
 
     if(itemCount>0){
+        //we get the items in the cart
         let cart = localStorage.getItem("cart");
         cart = JSON.parse(cart);
+
+
         for(i=0; i<cart.length; i++){
             //get the item
             let item = await getItem(cart[i]);
-
-           anchor.appendChild(buildItemList(item, i));
+            //display the item
+            anchor.appendChild(buildItemList(item, i));
         }
-    }else{
+        //we allow access to the order form
+        document.getElementById("contactform").disabled = false;
+
+
+    } else {
+        //we display a message
         anchor.innerHTML = "<p>Vous n'avez pas d'article dans votre panier.</p>";
+        //we block access to the order form
+        document.getElementById("contactform").disabled = true;
     }
 }
 
