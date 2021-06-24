@@ -359,22 +359,36 @@ const sendOrder = async function(order){
 const displayOrdeRecap = function(){
     //we get the order data
     let order = JSON.parse(localStorage.getItem("lastOrder"));
+    
+    //we display the name of the customer in our thank you message
+    const nameSpan = document.getElementById("customername");
+    nameSpan.innerHTML = order.contact.firstName;
+
+    //---- for the recap ----//
     //we set up the anchor
     const anchor = document.getElementById("orderrecap");
     
     //we create the components
     const orderidBloc = document.createElement("div");
-    const priceBloc = document.createElement("div");
     const recapBloc = document.createElement("div");
+    
 
     //we set up the bloc that display the order ID
     orderidBloc.classList.add("col-12", "text-center");
     orderidBloc.innerHTML = "<p>Voici l'identifiant de votre commande : "+order.orderId+"</p>";
 
     //we set up the recap
-    recapBloc 
+    let priceTotal = 0;
+    recapBloc.classList.add("col-md-4", "col-12", "mx-auto", "text-center", "row"); 
+    recapBloc.innerHTML = "<h3>Récapitulatif de votre commande :</h3>"
+    for(i=0; i<order.products.length; i++){
+       recapBloc.innerHTML += "<p class='col-6'>"+order.products[i].name+"</p><p class='col-6'>"+order.products[i].price+"€</p>"
+       priceTotal += order.products[i].price;
+    }
+    recapBloc.innerHTML += "<div class='text-center'> TOTAL : "+priceTotal+"€</div>";
 
     anchor.appendChild(orderidBloc);
+    anchor.appendChild(recapBloc);
 }
 
 
