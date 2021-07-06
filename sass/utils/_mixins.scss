@@ -13,4 +13,9 @@
         color: $primaryColor;
         box-shadow: inset 0px 5px 13px -7px $darkBg;
     }
+    &.btn-disabled{
+        color: darkgrey;
+        background-color: lightgray;
+        box-shadow: none;
+    }
 }

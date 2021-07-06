@@ -1,5 +1,8 @@
 
 // -------------------- UNIVERSAL CODE --------------------  //
+// -------------- this code is NOT page specific ----------- //
+
+// --------- OBJECTS ----------- //
 //define what a contact object is
 class Contact{
     constructor(firstName, lastName, address, city, email){
@@ -19,52 +22,13 @@ class Order{
     }
 }
 
-//create the cart array if it doesn't exist
+//----------------- CART FUNCTIONS -----------------//
+
+//create the shopping cart (array) if it doesn't already exist 
 let checkCart = localStorage.getItem("cart");
 if(checkCart === null){
     var cart = [];
     localStorage.setItem("cart", JSON.stringify(cart));
-}
-
-//count number of items in cart
-const numberItems = function() {
-    let cart = JSON.parse(localStorage.getItem("cart"));
-    return cart.length;
-}
-
-//display number of items in cart on top of cart icon 
-const displayItemCount = function(){
-    if(document.getElementsByClassName("cartbutton") != null) {
-        let itemCount = numberItems();
-        let counter = document.getElementById("itemcount");
-        if(itemCount > 0){
-            counter.innerHTML = itemCount;
-            counter.style.opacity = 1;
-            
-        }else{
-            counter.innerHTML = 0;
-            counter.style.opacity = 0;
-        }
-    }
-}
-
-displayItemCount();
-
-
-//get an item using it's ID
-const getItem = async function(id){
-    try{
-        let response = await fetch("http://localhost:3000/api/cameras/"+id);
-        if(response.ok){
-            let data = await response.json();
-
-        return data;
-        }
-        
-    }
-    catch(err){
-        console.log(err);
-    }
 }
 
 //this function returns an array of the produt ids in the cart
@@ -82,19 +46,73 @@ const deleteCart = function(){
     displayItemCount();
 }
 
+//add stuff to cart
+const addToCart = function(){
+    const productId = new URLSearchParams(window.location.search).get("id");
+    let cart = getCart();
+    cart.push(productId);
 
+    localStorage.setItem("cart", JSON.stringify(cart));
 
-// ---------- SEARCH PAGE (INDEX) --------- //
+    displayItemCount();
+}
 
+//removes the item at the given position from the cart
+const removeFromCart = function(pos){
+    let cart = getCart();
+    cart.splice(pos, 1);
 
-//calls the API and return the JSON the API gives
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    displayItemCount();
+    displayItemsInCart();
+}
+
+//count number of items in cart
+const numberItems = function() {
+    let cart = JSON.parse(localStorage.getItem("cart"));
+    return cart.length;
+}
+
+//display number of items in cart on top of cart icon 
+const displayItemCount = function(){
+    //we check that the cart icon exists
+    if(document.getElementsByClassName("cartbutton") != null) {
+        let itemCount = numberItems();
+        let counter = document.getElementById("itemcount");
+        if(itemCount > 0){
+            counter.innerHTML = itemCount;
+            counter.style.opacity = 1;
+            
+        }else{
+            counter.innerHTML = 0;
+            counter.style.opacity = 0;
+        }
+    }
+}
+
+//------------ ITEMS IN BACKEND FUNCTIONS -----------//
+
+//get an item using it's ID
+const getItem = async function(id){
+    try{
+        let response = await fetch("http://localhost:3000/api/cameras/"+id);
+        if(response.ok){
+            let data = await response.json();
+            return data;
+        } 
+    }
+    catch(err){
+        console.log(err);
+    }
+}
+
+//get every item
 const getProducts = async function(){
     try{
         let response = await fetch("http://localhost:3000/api/cameras");
         if(response.ok){
-            
             let data = await response.json();
-
             return data;
         } 
     }
@@ -102,6 +120,10 @@ const getProducts = async function(){
         console.log(err);
     }    
 }
+
+
+// ---------- SEARCH PAGE (INDEX) --------- //
+
 
 //goes through the array of products to display them one after the other
 const displayProducts = async function(){
@@ -122,7 +144,7 @@ const buildProductPrev = function(product){
     const newPreview = document.createElement("a");
     const newPreviewInfo = document.createElement("div");
 
-    //the content of the new
+    //the content of the new product to be displayed
     const productImg = "<img class='prevImg' alt='picture of "+product.name+"' src='"+product.imageUrl+"'>";
     const productName = "<h3>"+product.name+"</h3>";
     const productPrice = "<p class='text-end price'>"+product.price+"€</p>";
@@ -205,28 +227,6 @@ const makeForm = function(optionList){
     return formLabel+formStart+list+formEnd;
 }
 
-//add stuff to cart
-const addToCart = function(){
-    const productId = new URLSearchParams(window.location.search).get("id");
-    let cart = getCart();
-    cart.push(productId);
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    displayItemCount();
-}
-
-//removes the item at the given position from the cart
-const removeFromCart = function(pos){
-    let cart = getCart();
-    cart.splice(pos, 1);
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    displayItemCount();
-    displayItemsInCart();
-}
-
 //builds the list of items in cart
 const buildItemList = function(item, pos){
     //we create the element
@@ -257,9 +257,11 @@ const buildItemList = function(item, pos){
 const displayItemsInCart = async function(){
     let itemCount = numberItems();
     let anchor = document.getElementById("cartitemlist");
+    let submitButton = document.getElementById("submitorder");
     //we wipe the cart clean, in case we're already on the page and updating the cart
     anchor.innerHTML = "";
 
+    //we check that the cart is not empty
     if(itemCount>0){
         //we get the items in the cart
         let cart = getCart();
@@ -283,13 +285,18 @@ const displayItemsInCart = async function(){
         totalDiv.innerHTML = "<p>Total du panier : "+totalPrice+"€</p>"
         anchor.appendChild(totalDiv);
         //we add the eventListener to the submit button
-        document.getElementById("submitorder").addEventListener("click", placeOrder);
-
+        submitButton.addEventListener("click", placeOrder);
+        //we check if the submit button was disabled, and if so we remove the class
+        if(submitButton.classList.contains("btn-disabled")){
+            submitButton.classList.remove("btn-disabled");
+        }
+    //if the cart is empty   
     } else {
         //we display a message
         anchor.innerHTML = "<p>Vous n'avez pas d'article dans votre panier.</p>";
-        //we block access to the order form
+        //we block access to the order form and the button
         document.getElementById("contactform").disabled = true;
+        submitButton.classList.add("btn-disabled");
     }
 }
 
@@ -399,12 +406,15 @@ const pageType = document.querySelector("body");
 switch(true) {
     case pageType.classList.contains("searchpage") :
         displayProducts();
+        displayItemCount();
     break;
     case pageType.classList.contains("productpage") :
         displayItem();
+        displayItemCount();
     break; 
     case pageType.classList.contains("cartpage") :
         displayItemsInCart();
+        displayItemCount();
     break;
     case pageType.classList.contains("confirmation") :
         displayOrdeRecap();
