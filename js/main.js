@@ -91,6 +91,7 @@ const displayItemCount = function(){
     }
 }
 
+
 //------------ ITEMS IN BACKEND FUNCTIONS -----------//
 
 //get an item using it's ID
@@ -117,10 +118,10 @@ const getProducts = async function(){
         } 
     }
     catch(err){
+        window.alert("OUPS ! Il semblerait que la partie back-end de ce projet ne soit pas pas lancée. Assurez d'avoir démarré la partie back-end avec la commande 'npm start' depuis le répertoire 'JDWP5'."); 
         console.log(err);
     }    
 }
-
 
 // ---------- SEARCH PAGE (INDEX) --------- //
 
@@ -226,7 +227,7 @@ const makeForm = function(optionList){
     //we return the form in a string
     return formLabel+formStart+list+formEnd;
 }
-
+// ------------- CART PAGE ------------- //
 //builds the list of items in cart
 const buildItemList = function(item, pos){
     //we create the element
@@ -252,7 +253,7 @@ const buildItemList = function(item, pos){
     return itemInList;
 }
 
-// ------------- CART PAGE ------------- //
+
 //function that displays what's in the cart
 const displayItemsInCart = async function(){
     let itemCount = numberItems();
