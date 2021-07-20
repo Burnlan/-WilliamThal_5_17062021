@@ -301,17 +301,26 @@ const displayItemsInCart = async function(){
     }
 }
 
+//function that tests the emails
+const checkMail = function(form){
+    //an email must have an @ and a domaine extension
+    regex = /^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@{[a-zA-Z0-9_\-\.]+0\.([a-zA-Z]{2,5}){1,25})+)*$/;
+    //we do the test on the "email" field
+    if(regex.test(form.email.value)){
+        console.log("success");
+        return true;
+    }else{
+        console.log("invalid email format");
+        return false;
+    }
+}
 
 //function that places the order
 const placeOrder = function(event){
     //we select the form
     const target = document.getElementById("orderform");
-    
-    //we check if it's valid
-    if(target.checkValidity() == false){
-        //if invalid we let the event play out to get the most out of html5 form handling
-        console.log("error : invalid inputs");
-    }else{
+    //we check if it's not empty and valid
+    if(target.checkValidity() == true && checkMail(target) == true){
         //if the form is valid, we prevent the submit event
         event.preventDefault();
         //we call the function that creates a contact object using the form
@@ -320,6 +329,10 @@ const placeOrder = function(event){
         let order = new Order(contact, getCart());
         //we call the function that sends orders
         sendOrder(order);
+    }else{
+        //if invalid we let the event play out to get the most out of html5 form handling, but we prevent the reloading
+        event.preventDefault();
+        console.log("error : invalid inputs");
     }
 }
 
@@ -351,6 +364,7 @@ const sendOrder = async function(order){
         })
     if(response.ok){
         let data = await response.json();
+        console.log(data);
         //we store the order
         localStorage.setItem("lastOrder", JSON.stringify(data));
         //we empty the cart
